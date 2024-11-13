@@ -1,0 +1,80 @@
+FROM debian:bookworm-slim
+
+RUN adduser -u 1010 --disabled-password --comment "" worker
+
+# use backport to install cURL v8
+RUN echo 'deb http://deb.debian.org/debian bookworm-backports main' > /etc/apt/sources.list.d/backports.list
+
+RUN apt-get -y update \
+    && apt-get -y upgrade \
+    && apt-get -y install \
+        apt-transport-https \
+        bzip2 \
+        curl/bookworm-backports \
+        ca-certificates \
+        libbz2-dev \
+        libcurl4-openssl-dev \
+        libdb-dev \
+        libevent-dev \
+        libfreetype6-dev \
+        libgmp-dev \
+        libjpeg-dev \
+        libjpeg62-turbo-dev \
+        libmcrypt-dev \
+        libmemcached-dev \
+        libpng-dev \
+        libssl-dev \
+        libtiff-dev \
+        libxml2-dev \
+        libzip-dev \
+        lsb-release \
+        memcached \
+        libmhash2 \
+        libmhash-dev \
+        unzip \
+    && apt-get -y clean \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get -y update \
+  && apt-get -y install \
+      php8.2 \
+      php8.2-apcu \
+      php8.2-bcmath \
+      php8.2-cli \
+      php8.2-common \
+      php8.2-curl \
+      php8.2-dev \
+      php8.2-gd \
+      php8.2-gmp \
+      php8.2-ldap \
+      php8.2-mbstring \
+      php8.2-mysqlnd \
+      php8.2-opcache \
+      php-pear \
+      php8.2-igbinary \
+      php8.2-imagick \
+      php8.2-mcrypt \
+      php8.2-memcache \
+      php8.2-memcached \
+      php8.2-redis \
+      php8.2-ssh2 \
+      php8.2-uploadprogress \
+      php8.2-yaml \
+      php8.2-zip \
+      php8.2-pgsql \
+      php8.2-redis \
+      php8.2-soap \
+      php8.2-xml \
+  && apt-get -y clean \
+  && rm -rf /var/lib/apt/lists/*
+
+USER worker
+
+WORKDIR /var/app
+
+RUN curl -s https://getcomposer.org/installer | php
+COPY composer.json .
+RUN php /var/app/composer.phar install
+COPY run.sh run.php ./
+
+ENTRYPOINT ["./run.sh"]

@@ -1,0 +1,13 @@
+FROM php:8.2.25-zts-alpine3.19 AS base
+
+RUN apk add --update --no-cache curl bash
+
+WORKDIR /var/app
+
+RUN curl -s https://getcomposer.org/installer | php
+
+COPY composer.json .
+RUN php /var/app/composer.phar install
+COPY run.sh run.php ./
+
+ENTRYPOINT ["./run.sh"]
