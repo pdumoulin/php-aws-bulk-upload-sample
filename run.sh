@@ -9,4 +9,6 @@ php -v
 curl -V
 openssl version
 
+sysctl -a | grep net.ipv4
+
 php run.php

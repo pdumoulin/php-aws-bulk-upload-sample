@@ -36,3 +36,10 @@ $ docker compose run --build --rm debian
 ```sh
 $ docker compose run --build --rm debian.backport
 ```
+
+### Tweaking cURL Options
+
+| Name  | Impact |
+| ------------- | ------------- |
+| [CURLOPT_FORBID_REUSE](https://curl.se/libcurl/c/CURLOPT_FORBID_REUSE.html)  | Set to `false` resolves issue  |
+| [CURLOPT_MAXLIFETIME_CONN](https://curl.se/libcurl/c/CURLOPT_MAXLIFETIME_CONN.html)  | Lowering value makes issue less likely to occur  |
